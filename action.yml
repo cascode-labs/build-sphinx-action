@@ -1,0 +1,91 @@
+name: 'Build sphinx docs'
+description: 'Builds IDS Sphinx documentation'
+inputs:
+  docs_path: # id of input
+    description: 'The path to the documentation folder from the repo root'
+    required: false
+    default: 'docs'
+  base_env_prefix:  # id of input
+    description: 'The prefix of the base Conda environment for self-hosted runs.'
+    required: false
+    default: '/prj/ids/ids-conda/envs/anaconda'
+  artifact_name:
+    description: 'Display name of the documentation artifact'
+    required: false
+    default: 'documentation'
+outputs:
+  filepath:
+    description: "The file path of the generated HTML documentation"
+    value: ${{ steps.main.outputs.filepath }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/download-artifact@v2
+      with:
+        path: artifacts
+    - id: main
+      run: |
+        echo "::set-output name=PACKAGE_PATH::$(echo "None")"
+        echo "CHECKS"
+        echo "------"
+        echo "Checking for the docs folder"
+        if [ -d ${{ inputs.docs_path }} ]; then
+          echo "  Found the docs folder at ${{ inputs.docs_path }}"
+        else
+          echo "  ERROR: Unable to locate the docs path, ${{ inputs.docs_path }}. Skipping the build of the docs."
+          exit 0
+        fi
+        if [ ! -f "envs/build-docs.yml" ]; then
+          echo "  ERROR: Unable to locate envs/build-docs.yml. Skipping the build of the documentation."
+          exit 0
+        fi
+
+        echo "Checking Conda type to adjust for the host type"
+        if [ ${CONDA} = "/usr/share/miniconda" ]; then
+          echo "Running on a GitHub server"
+          echo "  Make sure you've already called conda-incubator/setup-miniconda@v2"
+        elif [ -e ${{ inputs.BASE_ENV_PREFIX }}/etc/profile.d/conda.sh ]; then
+          echo "Running on a self-hosted server"
+          echo 'source ${{ inputs.BASE_ENV_PREFIX }}/etc/profile.d/conda.sh'
+          source ${{ inputs.BASE_ENV_PREFIX }}/etc/profile.d/conda.sh
+        else
+          echo "Conda not setup"
+          exit 0
+        fi
+
+        echo ""
+        echo "SETUP BUILD ENV"
+        echo "-----------------"
+        echo "Setting up ${{ github.event.repository.name }}-build-docs"
+        conda env update --name ${{ github.event.repository.name }}-build-docs \
+          --file envs/build-docs.yml || \
+          conda env create --name ${{ github.event.repository.name }}-build-docs \
+          -f envs/build-docs.yml
+        conda activate ${{ github.event.repository.name }}-build-docs
+        echo "Install project package"
+        if [ -e "artifacts/${{  }}-*.tar.bz2" ]; then
+          mkdir -p channel/linux-64
+          cp "artifacts/${{ github.event.repository.name }}-*.tar.bz2" channel/linux-64
+          conda index channel
+          conda install -c ./channel ${{ github.event.repository.name }}
+        fi
+        echo "conda info"
+        conda info
+        echo "conda list"
+        conda list
+
+        echo ""
+        echo "BUILD DOCS"
+        echo "----------"
+        cd docs
+        if [ -e "${{ inputs.docs_path }}/setup_source.sh" ]; then
+          ./docs/setup_source.sh
+        fi
+        make html
+        cd ..
+        echo "::set-output name=filepath::$(echo '${{ inputs.docs_path }}/build/html')"
+      shell: bash -l {0}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.artifact_name }}
+        path: docs/build/html

@@ -1,0 +1,16 @@
+name: build-docs
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - conda=4.9.2
+  - sphinx=3.5.*
+  - recommonmark=0.6.*
+  - sphinx_rtd_theme=0.4.*
+  - sphinx-panels=0.5
+  - sphinx-autobuild=0.7
+  - sphinx-click=2.7
+  - sphinx-copybutton=0.3
+  - pip
+  - pip:
+    - sphinx-tabs==2.1

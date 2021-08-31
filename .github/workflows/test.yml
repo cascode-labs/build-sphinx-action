@@ -1,0 +1,32 @@
+# Test the action
+
+name: Test
+
+on:
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  # Test a github hosted runner
+  build-Github:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Setup Conda
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.7
+          #activate-environment: build-docs
+          #environment-file: envs/build-docs.yml
+      # Runs this action
+      - uses: ./
+      - uses: actions/download-artifact@v2
+      - name: Check Artifacts
+        run: |
+          ls -al
+          if [ ! -e documentation ]; then
+            echo "documentation artifact not found"
+            exit 1
+          fi
+          ls -al documentation
