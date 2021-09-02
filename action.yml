@@ -94,6 +94,8 @@ runs:
           cp "artifacts/${{ github.event.repository.name }}-*.tar.bz2" "${CHANNEL_PATH}"
           conda index "${CHANNEL_PATH}"
           conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
+        else
+          echo "Did not install project package"
         fi
         echo ""
         echo "conda info"
