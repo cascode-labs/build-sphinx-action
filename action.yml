@@ -5,17 +5,33 @@ inputs:
     description: 'The path to the documentation folder from the repo root'
     required: false
     default: 'docs'
+  conda_build_env_filepath:
+    description: 'Yml Conda build environment definition file'
+    required: false
+    default: 'action_default'
   base_env_prefix:  # id of input
     description: 'The prefix of the base Conda environment for self-hosted runs.'
     required: false
-    default: '/prj/ids/ids-conda/envs/anaconda'
+    default: '/usr/share/miniconda'
   artifact_name:
     description: 'Display name of the documentation artifact'
     required: false
     default: 'documentation'
+  readme_path:
+    description: 'Path to the readme file'
+    required: false
+    default: 'README.md'
+  package_folder_path:
+    description: 'Path to the folder containing the project''s package(s) to be installed'
+    required: false
+    default: 'artifacts'
+  package_name:
+    description: 'Name of the project''s Conda package'
+    required: false
+    default: ${{ github.event.repository.name }}
 outputs:
   filepath:
-    description: "The file path of the generated HTML documentation"
+    description: 'The file path of the generated HTML documentation'
     value: ${{ steps.main.outputs.filepath }}
 runs:
   using: "composite"
@@ -25,64 +41,75 @@ runs:
         path: artifacts
     - id: main
       run: |
-        echo "::set-output name=PACKAGE_PATH::$(echo "None")"
+        echo "::set-output name=filepath::$(echo "None")"
         echo "CHECKS"
         echo "------"
-        echo "Checking for the docs folder"
         if [ -d ${{ inputs.docs_path }} ]; then
           echo "  Found the docs folder at ${{ inputs.docs_path }}"
         else
           echo "  ERROR: Unable to locate the docs path, ${{ inputs.docs_path }}. Skipping the build of the docs."
           exit 0
         fi
-        if [ ! -f "envs/build-docs.yml" ]; then
-          echo "  ERROR: Unable to locate envs/build-docs.yml. Skipping the build of the documentation."
-          exit 0
-        fi
-
-        echo "Checking Conda type to adjust for the host type"
-        if [ ${CONDA} = "/usr/share/miniconda" ]; then
-          echo "Running on a GitHub server"
-          echo "  Make sure you've already called conda-incubator/setup-miniconda@v2"
-        elif [ -e ${{ inputs.BASE_ENV_PREFIX }}/etc/profile.d/conda.sh ]; then
-          echo "Running on a self-hosted server"
-          echo 'source ${{ inputs.BASE_ENV_PREFIX }}/etc/profile.d/conda.sh'
-          source ${{ inputs.BASE_ENV_PREFIX }}/etc/profile.d/conda.sh
+        echo ""
+        echo "Selecting Build Env yml File"
+        if [ ${{ inputs.conda_build_env_filepath }} = 'action_default' ]; then
+          echo "Using the default conda configuration"
+          CONDA_BUILD_ENV_FILE="${{ github.action_path }}/envs/build-docs.yml"
+        elif [ -f ${{ inputs.conda_build_env_filepath }} ]; then
+          CONDA_BUILD_ENV_FILE=${{ inputs.conda_build_env_filepath }}
         else
-          echo "Conda not setup"
-          exit 0
+          echo "Using the default conda configuration"
+          CONDA_BUILD_ENV_FILE="${{ github.action_path }}/envs/build-docs.yml"
         fi
+        echo "CONDA_BUILD_ENV_FILE: ${CONDA_BUILD_ENV_FILE=}"
+        cat "${CONDA_BUILD_ENV_FILE}"
+
+        echo "Checking that Conda is initialized"
+        if ! command -v conda &> /dev/null; then
+          echo "Conda is not setup.  Attempting to set it up."
+          echo 'source ${{ inputs.base_env_prefix }}/etc/profile.d/conda.sh'
+          source ${{ inputs.base_env_prefix }}/etc/profile.d/conda.sh
+          if ! command -v conda &> /dev/null; then
+            echo "ERROR: Failed to setup setup Conda"
+            exit 1
+          fi
+        fi
+        echo "  Conda is initialized"
 
         echo ""
         echo "SETUP BUILD ENV"
+        echo "Set source"
+        source ${{ inputs.base_env_prefix }}/etc/profile.d/conda.sh
         echo "-----------------"
-        echo "Setting up ${{ github.event.repository.name }}-build-docs"
-        conda env update --name ${{ github.event.repository.name }}-build-docs \
-          --file envs/build-docs.yml || \
-          conda env create --name ${{ github.event.repository.name }}-build-docs \
-          -f envs/build-docs.yml
-        conda activate ${{ github.event.repository.name }}-build-docs
-        echo "Install project package"
-        if [ -e "artifacts/${{  }}-*.tar.bz2" ]; then
-          mkdir -p channel/linux-64
-          cp "artifacts/${{ github.event.repository.name }}-*.tar.bz2" channel/linux-64
-          conda index channel
-          conda install -c ./channel ${{ github.event.repository.name }}
+        echo "Setting up ${{ github.event.repository.name }}-build environment"
+        conda env update --name ${{ github.event.repository.name }}-build \
+                         --file "${CONDA_BUILD_ENV_FILE}"  || \
+            conda env create -f "${CONDA_BUILD_ENV_FILE}"
+        conda activate ${{ github.event.repository.name }}-build
+
+        if [ -e "${{ inputs.package_folder_path }}/${{ github.event.repository.name }}-*.tar.bz2" ]; then
+          echo "Installing project package"
+          CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
+          mkdir -p "${CHANNEL_PATH}"
+          cp "artifacts/${{ github.event.repository.name }}-*.tar.bz2" "${CHANNEL_PATH}"
+          conda index "${CHANNEL_PATH}"
+          conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
         fi
+        echo ""
         echo "conda info"
         conda info
+        echo ""
         echo "conda list"
         conda list
 
         echo ""
         echo "BUILD DOCS"
         echo "----------"
-        cd docs
-        if [ -e "${{ inputs.docs_path }}/setup_source.sh" ]; then
-          ./docs/setup_source.sh
+        cd ${{ inputs.docs_path }}
+        if [ -e "./setup_source.sh" ]; then
+          ./setup_source.sh
         fi
         make html
-        cd ..
         echo "::set-output name=filepath::$(echo '${{ inputs.docs_path }}/build/html')"
       shell: bash -l {0}
     - uses: actions/upload-artifact@v2
