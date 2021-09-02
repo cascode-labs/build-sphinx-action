@@ -89,19 +89,11 @@ runs:
         conda install conda-build
         ls -al ${{ inputs.package_folder_path }}
         echo "----------------"
-        echo "Github repo name = ${{ github.event.repository.name }}"
-        if [ -e "${{ inputs.package_folder_path }}/${{ github.event.repository.name }}-*.tar.bz2" ]; then
+        if [ -e "${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*" ] && [ -e "${{ inputs.package_folder_path }}/*.bz2" ]; then
           echo "Installing project package"
           CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
           mkdir -p "${CHANNEL_PATH}"
-          cp "artifacts/${{ github.event.repository.name }}-*.tar.bz2" "${CHANNEL_PATH}"
-          conda index "${CHANNEL_PATH}"
-          conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
-        elif [ -e "${{ inputs.package_folder_path }}/example-0.1.0-0.tar.bz2" ]; then
-          echo "Installing project package"
-          CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
-          mkdir -p "${CHANNEL_PATH}"
-          cp "${{ inputs.package_folder_path }}/example-0.1.0-0.tar.bz2" "${CHANNEL_PATH}"
+          cp "${{ inputs.package_folder_path }}/*.bz2" "${CHANNEL_PATH}"
           conda index "${CHANNEL_PATH}"
           conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
         else
