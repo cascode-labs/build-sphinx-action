@@ -1,5 +1,5 @@
 # ids-actions-build-conda
-[![Test](https://github.com/skyworksinc/ids-actions-build-sphinx-docs/actions/workflows/test.yml/badge.svg)](https://github.com/skyworksinc/ids-actions-build-conda/actions/workflows/test.yml)
+[![Test](https://github.com/cascode-labs/build-sphinx-action/actions/workflows/test.yml/badge.svg)](https://github.com/cascode-labs/build-sphinx-action/actions/workflows/test.yml)
 ![v0.1.0](https://img.shields.io/badge/v-0.1.0-blue)
 
 A Github Action for building the [Sphinx](https://www.sphinx-doc.org/en/master/) 
