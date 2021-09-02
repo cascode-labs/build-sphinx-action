@@ -24,7 +24,7 @@ inputs:
   package_folder_path:
     description: 'Path to the folder containing the project''s package(s) to be installed'
     required: false
-    default: 'artifacts'
+    default: 'conda_package'
   package_name:
     description: 'Name of the project''s Conda package'
     required: false

@@ -51,3 +51,25 @@ jobs:
             echo "ERROR: conda_package artifact was found even though it was not supposed to be created."
             exit 1
           fi
+  # Test a github hosted runner
+  build-with-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Setup Conda
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.7
+      # Runs this action
+      - uses: ./
+        with:
+          package_name: 'example'
+      - uses: actions/download-artifact@v2
+      - name: Check Artifacts
+        run: |
+          ls -al
+          if [ ! -e documentation ]; then
+            echo "documentation artifact not found"
+            exit 1
+          fi
+          ls -al documentation
