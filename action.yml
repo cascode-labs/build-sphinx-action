@@ -86,6 +86,7 @@ runs:
                          --file "${CONDA_BUILD_ENV_FILE}"  || \
             conda env create -f "${CONDA_BUILD_ENV_FILE}"
         conda activate ${{ github.event.repository.name }}-build
+        conda install conda-build
         ls -al ${{ inputs.package_folder_path }}
         echo "----------------"
         echo "Github repo name = ${{ github.event.repository.name }}"
