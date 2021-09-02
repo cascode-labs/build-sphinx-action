@@ -86,7 +86,8 @@ runs:
                          --file "${CONDA_BUILD_ENV_FILE}"  || \
             conda env create -f "${CONDA_BUILD_ENV_FILE}"
         conda activate ${{ github.event.repository.name }}-build
-
+        ls -al ${{ inputs.package_folder_path }}
+        echo "----------------"
         if [ -e "${{ inputs.package_folder_path }}/${{ github.event.repository.name }}-*.tar.bz2" ]; then
           echo "Installing project package"
           CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
