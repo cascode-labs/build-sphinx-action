@@ -86,9 +86,26 @@ job-name:
         PACKAGE_FOLDER_PATH: '{NEW_PACKAGE_FOLDER_PATH}'
         PACKAGE_NAME: '{NEW_PACKAGE_NAME}'
 ```
-# Project Requirements
-The Conda recipe's tests should copy their results, including any test or lint reports to the "test_results" folder.
-Then the folder will be uploaded as an artifact.
+## Roadmap
 
-The project also needs to have a build environment definition file at "envs/build.yml".  This should include all the 
-packages required to build the package.
+See the 
+[open issues](https://github.com/cascode-labs/build-conda-action/issues)
+for a list of proposed features (and known issues).
+[Milestones](https://github.com/cascode-labs/build-conda-action/milestones)
+outline the release version of each issue.
+
+## Contributing
+
+Contributions are what make the open source community such an amazing place to 
+learn, inspire, and create. Any contributions you make are 
+**greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Testing
+This repo contains a test workflow with each job of the workflow as a different
+test case.
