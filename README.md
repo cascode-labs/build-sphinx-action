@@ -1,14 +1,35 @@
-# ids-actions-build-conda
+# build-sphinx-action
 [![Test](https://github.com/cascode-labs/build-sphinx-action/actions/workflows/test.yml/badge.svg)](https://github.com/cascode-labs/build-sphinx-action/actions/workflows/test.yml)
 ![v0.1.0](https://img.shields.io/badge/v-0.1.0-blue)
 
 A Github Action for building the [Sphinx](https://www.sphinx-doc.org/en/master/) 
 documentation of an IDS project.
 
+<br />
+<p align="center">
+  <a href="https://github.com/cascode-labs/build-conda-action">
+    <img src="images/conda_logo.png" alt="Conda Logo">
+  </a>
+
+  <h1 align="center">build-spinx-action</h1>
+
+  <p align="center">
+    A GitHub action that creates documentation 
+    <br />
+    <br />
+    <a href="https://github.com/github_username/repo_name">Action Marketplace</a>
+    ·
+    <a href="https://github.com/cascode-labs/build-sphinx-action/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/cascode-labs/build-sphinx-action/issues">Request Feature</a>
+  </p>
+</p>
+
 Features:
 - if a "docs/setup_source.sh" script exists, it will be ran before building the docs.
 - The project's conda package will be installed if it's already been uploaded as an artifact. 
 - Supports both GitHub hosted and self-hosted runners.  
+
 ## Getting Started
 > All inputs are optional. Just follow the project configuration guidelines below.
 
