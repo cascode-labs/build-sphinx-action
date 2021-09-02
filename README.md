@@ -7,9 +7,6 @@ documentation of an IDS project.
 
 <br />
 <p align="center">
-  <a href="https://github.com/cascode-labs/build-conda-action">
-    <img src="images/conda_logo.png" alt="Conda Logo">
-  </a>
 
   <h1 align="center">build-spinx-action</h1>
 
