@@ -19,6 +19,8 @@ jobs:
           python-version: 3.7
       # Runs this action
       - uses: ./
+        with:
+          package_name: 'other_example'
       - uses: actions/download-artifact@v2
       - name: Check Artifacts
         run: |
