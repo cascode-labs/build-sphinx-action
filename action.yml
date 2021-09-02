@@ -89,18 +89,18 @@ runs:
         ls -al ${{ inputs.package_folder_path }}
         echo "----------------"
         echo "Github repo name = ${{ github.event.repository.name }}"
-        if [ -f "${{ inputs.package_folder_path }}/${{ github.event.repository.name }}-*.tar.bz2" ]; then
+        if [ -e "${{ inputs.package_folder_path }}/${{ github.event.repository.name }}-*.tar.bz2" ]; then
           echo "Installing project package"
           CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
           mkdir -p "${CHANNEL_PATH}"
           cp "artifacts/${{ github.event.repository.name }}-*.tar.bz2" "${CHANNEL_PATH}"
           conda index "${CHANNEL_PATH}"
           conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
-        elif [ -f "${{ inputs.package_folder_path }}/example-**.tar.bz2" ]; then
+        elif [ -e "${{ inputs.package_folder_path }}/*.tar.bz2" ]; then
           echo "Installing project package"
           CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
           mkdir -p "${CHANNEL_PATH}"
-          cp "artifacts/example-**.tar.bz2" "${CHANNEL_PATH}"
+          cp "artifacts/*.tar.bz2" "${CHANNEL_PATH}"
           conda index "${CHANNEL_PATH}"
           conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
         else
