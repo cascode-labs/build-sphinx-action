@@ -96,7 +96,7 @@ runs:
           cp "artifacts/${{ github.event.repository.name }}-*.tar.bz2" "${CHANNEL_PATH}"
           conda index "${CHANNEL_PATH}"
           conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
-        elif [ -f "${{ inputs.package_folder_path }}/example-*.tar.bz2" ]; then
+        elif [ -f "${{ inputs.package_folder_path }}/example-0.1.0-0.tar.bz2" ]; then
           echo "Installing project package"
           CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
           mkdir -p "${CHANNEL_PATH}"
