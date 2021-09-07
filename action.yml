@@ -89,9 +89,9 @@ runs:
         conda install conda-build
         ls -al ${{ inputs.package_folder_path }}
         echo "----------------"
-        if [[ -a "${{ inputs.package_folder_path }}/*.bz2" ]]; then
+        if [ -a "${{ inputs.package_folder_path }}/*.bz2" ]; then
           echo "first if statement worked."
-          if [[ -a "${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*" ]]; then
+          if [ -a "${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*" ]; then
             echo "Installing project package"
             CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
             mkdir -p "${CHANNEL_PATH}"
