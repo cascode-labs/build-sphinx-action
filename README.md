@@ -109,3 +109,19 @@ learn, inspire, and create. Any contributions you make are
 ### Testing
 This repo contains a test workflow with each job of the workflow as a different
 test case.
+
+## Defaults
+
+#### envs/build-docs.yml package descriptions:
+  * [conda](https://docs.conda.io/en/latest/): required to create this documentation environment 
+  * [sphinx](https://www.sphinx-doc.org/en/master/): documentation package used to create the docs
+  * recommonmark: additional package to support markdown language. More information can be found [here](https://recommonmark.readthedocs.io/en/latest/)
+  * sphinx_rtd_theme: recommended sphinx theme to use
+  * sphinx-panels: additional sphinx feature for panels that needs to be installed 
+  * sphinx-autobuild: additional sphinx feature that builds documentation based on google format docs. More information can be found [here](https://pypi.org/project/sphinx-autobuild/)
+  * sphinx-click: additional sphinx feature that allows automatic extration of [click](https://click.palletsprojects.com/en/8.0.x/) applications. More information can be found [here](https://sphinx-click.readthedocs.io/en/latest/)
+  * sphinx-copybutton: additional sphinx feature to allow direct copying of code blocks. More information can be found [here](https://sphinx-copybutton.readthedocs.io/en/latest/)
+  * pip: another package installation tool, used for the following installation
+
+  - pip:
+    - sphinx-tabs: additional spinx feature for tabs that needs to be installed in order to use
