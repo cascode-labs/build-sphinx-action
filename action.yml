@@ -89,13 +89,16 @@ runs:
         conda install conda-build
         ls -al ${{ inputs.package_folder_path }}
         echo "----------------"
-        if [[ -a "${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*" ] && [ -a "${{ inputs.package_folder_path }}/*.bz2" ]]; then
-          echo "Installing project package"
-          CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
-          mkdir -p "${CHANNEL_PATH}"
-          cp "${{ inputs.package_folder_path }}/*.bz2" "${CHANNEL_PATH}"
-          conda index "${CHANNEL_PATH}"
-          conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
+        if [[ -a "${{ inputs.package_folder_path }}/*.bz2" ]]; then
+          echo "first if statement worked."
+          if [[ -a "${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*" ]]; then
+            echo "Installing project package"
+            CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
+            mkdir -p "${CHANNEL_PATH}"
+            cp "${{ inputs.package_folder_path }}/*.bz2" "${CHANNEL_PATH}"
+            conda index "${CHANNEL_PATH}"
+            conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
+          fi
         else
           echo "Did not install project package"
         fi
