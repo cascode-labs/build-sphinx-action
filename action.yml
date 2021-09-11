@@ -6,7 +6,7 @@ inputs:
     required: false
     default: 'docs'
   conda_build_env_filepath:
-    description: 'Yml Conda build environment definition file'
+    description: 'Yaml Conda build environment definition file'
     required: false
     default: 'action_default'
   base_env_prefix:  # id of input
@@ -17,10 +17,6 @@ inputs:
     description: 'Display name of the documentation artifact'
     required: false
     default: 'documentation'
-  readme_path:
-    description: 'Path to the readme file'
-    required: false
-    default: 'README.md'
   package_folder_path:
     description: 'Path to the folder containing the project''s package(s) to be installed'
     required: false
@@ -120,3 +116,6 @@ runs:
       with:
         name: ${{ inputs.artifact_name }}
         path: docs/build/html
+branding:
+  icon: 'book-open'
+  color: 'blue'

@@ -1,20 +1,14 @@
-# build-sphinx-action
 [![Test](https://github.com/cascode-labs/build-sphinx-action/actions/workflows/test.yml/badge.svg)](https://github.com/cascode-labs/build-sphinx-action/actions/workflows/test.yml)
 ![v0.1.0](https://img.shields.io/badge/v-0.1.0-blue)
 
-A Github Action for building the [Sphinx](https://www.sphinx-doc.org/en/master/) 
-documentation of an IDS project.
-
 <br />
 <p align="center">
-
   <h1 align="center">build-spinx-action</h1>
-
   <p align="center">
-    A GitHub action that creates documentation 
+    A GitHub action that creates documentation using <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> 
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">Action Marketplace</a>
+    <a href="https://github.com/marketplace/actions/build-sphinx-action">Action Marketplace</a>
     ·
     <a href="https://github.com/cascode-labs/build-sphinx-action/issues">Report Bug</a>
     ·
@@ -48,12 +42,19 @@ job-name:
 ### Inputs
 - **docs_path**: The path to the recipe from the repo root.  
   Optional, default: 'docs'
+- **conda_build_env_filepath**: Yaml Conda build environment definition file
+  default: 'action_default' which uses the environment described in a section below.
 - **base_env_prefix**:  The prefix of the base Conda environment.  
-  Optional, default: '/prj/ids/ids-conda/envs/anaconda'
+  THis should be set for self-hosted runners.  GitHub-hosted runners should use the conda-incubator/setup-miniconda@v2 
+  action to initialize conda.
+  Optional, default: '/usr/share/miniconda'
 - **artifact_name**:  The display name of the uploaded documentation artifact.  
   Optional, default: 'documentation'
-- **readme_path**: The path to the README file 
-  Optional, default: 'README.md'
+- **package_folder_path**: Path to the folder containing the project's Conda package(s) to be installed in the build 
+  environment.  This is helpful if you are trying to auto-document those packages.
+  default: 'conda_package'
+- **package_name**: Name of the project's Conda package.
+  default: ${{ github.event.repository.name }}  
 
 ### Outputs:
 - **package-filepath**: The file path of the generated package.  It will return "None" if no package was created.
@@ -110,18 +111,19 @@ learn, inspire, and create. Any contributions you make are
 This repo contains a test workflow with each job of the workflow as a different
 test case.
 
-## Defaults
-
-#### envs/build-docs.yml package descriptions:
+## Default Environment
+A list of the packages included in the [conda environment](envs/build-docs.yml) used to build the sphinx project used by default. envs/build-docs.yml package descriptions:
   * [conda](https://docs.conda.io/en/latest/): required to create this documentation environment 
   * [sphinx](https://www.sphinx-doc.org/en/master/): documentation package used to create the docs
-  * recommonmark: additional package to support markdown language. More information can be found [here](https://recommonmark.readthedocs.io/en/latest/)
-  * sphinx_rtd_theme: recommended sphinx theme to use
-  * sphinx-panels: additional sphinx feature for panels that needs to be installed 
-  * sphinx-autobuild: additional sphinx feature that builds documentation based on google format docs. More information can be found [here](https://pypi.org/project/sphinx-autobuild/)
-  * sphinx-click: additional sphinx feature that allows automatic extration of [click](https://click.palletsprojects.com/en/8.0.x/) applications. More information can be found [here](https://sphinx-click.readthedocs.io/en/latest/)
-  * sphinx-copybutton: additional sphinx feature to allow direct copying of code blocks. More information can be found [here](https://sphinx-copybutton.readthedocs.io/en/latest/)
-  * pip: another package installation tool, used for the following installation
-
-  - pip:
-    - sphinx-tabs: additional spinx feature for tabs that needs to be installed in order to use
+  * [recommonmark](https://recommonmark.readthedocs.io/en/latest/): additional package to support markdown language.
+  * [sphinx_rtd_theme](https://sphinx-rtd-theme.readthedocs.io/en/stable/): recommended sphinx theme
+  * [sphinx-panels](https://sphinx-panels.readthedocs.io/en/latest/): additional sphinx feature for panels
+  * [sphinx-autobuild](https://pypi.org/project/sphinx-autobuild/): A package for automatically rebuilding a sphinx 
+    project whenever a change is detected.
+  * [sphinx-click](https://sphinx-click.readthedocs.io/en/latest/): additional sphinx feature that allows automatic 
+    documentation of [click](https://click.palletsprojects.com/en/8.0.x/) CLI applications. 
+  * [sphinx-copybutton](https://sphinx-copybutton.readthedocs.io/en/latest/): additional sphinx feature to allow 
+    easy copying of code blocks.
+  * [pip](https://pip.pypa.io/en/stable/): Python package installation tool, used to install the [pypi](https://pypi.org/) packages below.
+    * [sphinx-tabs](https://sphinx-tabs.readthedocs.io/en/latest/): additional spinx feature for including tabs in your documentation
+    
