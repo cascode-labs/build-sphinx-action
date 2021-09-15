@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../build-conda-action/.idea/build-conda-action.iml" filepath="$PROJECT_DIR$/../build-conda-action/.idea/build-conda-action.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/build-sphinx-action.iml" filepath="$PROJECT_DIR$/.idea/build-sphinx-action.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../draft-release-action/.idea/draft-release-action.iml" filepath="$PROJECT_DIR$/../draft-release-action/.idea/draft-release-action.iml" />
       <module fileurl="file://$PROJECT_DIR$/../release-milestone-action/.idea/release-milestone-action.iml" filepath="$PROJECT_DIR$/../release-milestone-action/.idea/release-milestone-action.iml" />
     </modules>
   </component>
