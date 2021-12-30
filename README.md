@@ -17,18 +17,22 @@
 </p>
 
 Features:
+
 - if a "docs/setup_source.sh" script exists, it will be ran before building the docs.
-- The project's conda package will be installed if it's already been uploaded as an artifact. 
+- The project's conda package will be installed if it's already been uploaded as an artifact.
 - Supports both GitHub hosted and self-hosted runners.  
 
 ## Getting Started
+
 > All inputs are optional. Just follow the project configuration guidelines below.
 
 ### Standard Documentation Configuration
+
 - Place environment yml file for documention in envs/build-docs.yml.
 - Put any and all documentation files in the docs/source directory. _except readme file_
 
 ### Basic Usage
+
 ```yaml
 job-name:
   runs-on: 'ubuntu-latest'
@@ -39,24 +43,29 @@ job-name:
 ```
 
 ## Custom Configuration
+
 ### Inputs
+
 - **docs_path**: The path to the recipe from the repo root.  
   Optional, default: 'docs'
 - **conda_build_env_filepath**: Yaml Conda build environment definition file
   default: 'action_default' which uses the environment described in a section below.
+- **conda_build_env_name**: Name of the Conda build environment
+  default: '${{ github.event.repository.name }}-build-docs"'
 - **base_env_prefix**:  The prefix of the base Conda environment.  
-  THis should be set for self-hosted runners.  GitHub-hosted runners should use the conda-incubator/setup-miniconda@v2 
+  THis should be set for self-hosted runners.  GitHub-hosted runners should use the conda-incubator/setup-miniconda@v2
   action to initialize conda.
   Optional, default: '/usr/share/miniconda'
 - **artifact_name**:  The display name of the uploaded documentation artifact.  
   Optional, default: 'documentation'
-- **package_folder_path**: Path to the folder containing the project's Conda package(s) to be installed in the build 
+- **package_folder_path**: Path to the folder containing the project's Conda package(s) to be installed in the build
   environment.  This is helpful if you are trying to auto-document those packages.
   default: 'conda_package'
 - **package_name**: Name of the project's Conda package.
   default: ${{ github.event.repository.name }}  
 
-### Outputs:
+### Outputs
+
 - **package-filepath**: The file path of the generated package.  It will return "None" if no package was created.
 
 ### Artifacts Uploaded
@@ -65,8 +74,8 @@ The following are uploaded to the run as artifacts.
 
 - **documentation**: The html file for the newly created docs.
 
-
 ### Example customized workflow
+
 ```yaml
 job-name:
   runs-on: 'ubuntu-latest'
@@ -79,14 +88,15 @@ job-name:
     # Runs the action with the following inputs or defaults if not specified.
     - uses: cascode-labs/build-sphinx-action/action.yml@v0
       with:
-        DOCS_PATH: '{NEW_DOCS_PATH}'
-        CONDA_BUILD_ENV_FILEPATH: '{NEW_CONDA_BUILD_ENV_FILEPATH}'
-        BASE_ENV_PREFIX: '{NEW_BASE_ENV_PREFIX}'
-        ARTIFACT_NAME: '{NEW_ARTIFACT_NAME}'
-        README_PATH: '{NEW_README_PATH}'
-        PACKAGE_FOLDER_PATH: '{NEW_PACKAGE_FOLDER_PATH}'
-        PACKAGE_NAME: '{NEW_PACKAGE_NAME}'
+        docs_path: '{NEW_DOCS_PATH}'
+        conda_build_env_filepath: '{NEW_CONDA_BUILD_ENV_FILEPATH}'
+        conda_build_env_name: '{NEW_CONDA_BUILD_ENV_NAME}'
+        base_env_prefix: '{NEW_BASE_ENV_PREFIX}'
+        artifact_name: '{NEW_ARTIFACT_NAME}'
+        package_folder_path: '{NEW_PACKAGE_FOLDER_PATH}'
+        package_name: '{NEW_PACKAGE_NAME}'
 ```
+
 ## Roadmap
 
 See the 
@@ -97,8 +107,8 @@ outline the release version of each issue.
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to 
-learn, inspire, and create. Any contributions you make are 
+Contributions are what make the open source community such an amazing place to
+learn, inspire, and create. Any contributions you make are
 **greatly appreciated**.
 
 1. Fork the Project
@@ -108,22 +118,24 @@ learn, inspire, and create. Any contributions you make are
 5. Open a Pull Request
 
 ### Testing
+
 This repo contains a test workflow with each job of the workflow as a different
 test case.
 
 ## Default Environment
+
 A list of the packages included in the [conda environment](envs/build-docs.yml) used to build the sphinx project used by default. envs/build-docs.yml package descriptions:
-  * [conda](https://docs.conda.io/en/latest/): required to create this documentation environment 
-  * [sphinx](https://www.sphinx-doc.org/en/master/): documentation package used to create the docs
-  * [recommonmark](https://recommonmark.readthedocs.io/en/latest/): additional package to support markdown language.
-  * [sphinx_rtd_theme](https://sphinx-rtd-theme.readthedocs.io/en/stable/): recommended sphinx theme
-  * [sphinx-panels](https://sphinx-panels.readthedocs.io/en/latest/): additional sphinx feature for panels
-  * [sphinx-autobuild](https://pypi.org/project/sphinx-autobuild/): A package for automatically rebuilding a sphinx 
-    project whenever a change is detected.
-  * [sphinx-click](https://sphinx-click.readthedocs.io/en/latest/): additional sphinx feature that allows automatic 
-    documentation of [click](https://click.palletsprojects.com/en/8.0.x/) CLI applications. 
-  * [sphinx-copybutton](https://sphinx-copybutton.readthedocs.io/en/latest/): additional sphinx feature to allow 
-    easy copying of code blocks.
-  * [pip](https://pip.pypa.io/en/stable/): Python package installation tool, used to install the [pypi](https://pypi.org/) packages below.
-    * [sphinx-tabs](https://sphinx-tabs.readthedocs.io/en/latest/): additional spinx feature for including tabs in your documentation
-    
+
+- [conda](https://docs.conda.io/en/latest/): required to create this documentation environment 
+- [sphinx](https://www.sphinx-doc.org/en/master/): documentation package used to create the docs
+- [recommonmark](https://recommonmark.readthedocs.io/en/latest/): additional package to support markdown language.
+- [sphinx_rtd_theme](https://sphinx-rtd-theme.readthedocs.io/en/stable/): recommended sphinx theme
+- [sphinx-panels](https://sphinx-panels.readthedocs.io/en/latest/): additional sphinx feature for panels
+- [sphinx-autobuild](https://pypi.org/project/sphinx-autobuild/): A package for automatically rebuilding a sphinx 
+  project whenever a change is detected.
+- [sphinx-click](https://sphinx-click.readthedocs.io/en/latest/): additional sphinx feature that allows automatic 
+  documentation of [click](https://click.palletsprojects.com/en/8.0.x/) CLI applications.
+- [sphinx-copybutton](https://sphinx-copybutton.readthedocs.io/en/latest/): additional sphinx feature to allow 
+  easy copying of code blocks.
+- [pip](https://pip.pypa.io/en/stable/): Python package installation tool, used to install the [pypi](https://pypi.org/) packages below.
+  - [sphinx-tabs](https://sphinx-tabs.readthedocs.io/en/latest/): additional spinx feature for including tabs in your documentation
