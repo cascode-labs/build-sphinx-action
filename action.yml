@@ -9,6 +9,10 @@ inputs:
     description: 'Yaml Conda build environment definition file'
     required: false
     default: 'action_default'
+  conda_build_env_name:
+    description: 'Name of the build conda environment'
+    required: false
+    default: 'action_default'
   base_env_prefix:  # id of input
     description: 'The prefix of the base Conda environment for self-hosted runs.'
     required: false
@@ -57,7 +61,7 @@ runs:
           echo "Using the default conda configuration"
           CONDA_BUILD_ENV_FILE="${{ github.action_path }}/envs/build-docs.yml"
         fi
-        echo "CONDA_BUILD_ENV_FILE: ${CONDA_BUILD_ENV_FILE=}"
+        echo "CONDA_BUILD_ENV_FILE: ${CONDA_BUILD_ENV_FILE}"
         cat "${CONDA_BUILD_ENV_FILE}"
 
         echo "Checking that Conda is initialized"
@@ -72,17 +76,24 @@ runs:
         fi
         echo "  Conda is initialized"
 
+        echo "Conda build docs env name"
+        if [ ${{ inputs.conda_build_env_name }} = 'action_default' ]; then
+          echo "Using the default conda build env name: ${{ github.event.repository.name }}-build-docs"
+          CONDA_BUILD_ENV_NAME="${{ github.event.repository.name }}-build-docs"
+        else
+          echo "Using the provided conda build env name: ${{ inputs.conda_build_env_name  }}"
+          CONDA_BUILD_ENV_NAME="${{ inputs.conda_build_env_name  }}"
+        fi
+
         echo ""
         echo "SETUP BUILD ENV"
         echo "Set source"
-        source ${{ inputs.base_env_prefix }}/etc/profile.d/conda.sh
         echo "-----------------"
         echo "Setting up ${{ github.event.repository.name }}-build environment"
-        conda env update --name ${{ github.event.repository.name }}-build \
+        conda env update --name ${CONDA_BUILD_ENV_NAME} \
                          --file "${CONDA_BUILD_ENV_FILE}"  || \
             conda env create -f "${CONDA_BUILD_ENV_FILE}"
-        conda activate ${{ github.event.repository.name }}-build
-        conda install conda-build
+        conda activate ${CONDA_BUILD_ENV_NAME}
         ls -al ${{ inputs.package_folder_path }}
         echo "----------------"
         if [ -a ${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*.bz2 ]; then
