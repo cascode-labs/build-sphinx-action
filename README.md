@@ -1,5 +1,5 @@
 [![Test](https://github.com/cascode-labs/build-sphinx-action/actions/workflows/test.yml/badge.svg)](https://github.com/cascode-labs/build-sphinx-action/actions/workflows/test.yml)
-![v0.1.0](https://img.shields.io/badge/v-0.1.0-blue)
+![v0.1.0](https://img.shields.io/badge/v-0.2.0-blue)
 
 <br />
 <p align="center">
