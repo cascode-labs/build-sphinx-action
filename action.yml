@@ -104,7 +104,10 @@ runs:
           cp ${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*.bz2 ${CHANNEL_PATH}
           conda index "${CHANNEL_PATH}"
           conda update -c "${CHANNEL_PATH}" ${{ inputs.package_name }} || \
-            conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
+            conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }} || \
+            (conda uninstall ${{ inputs.package_name }} && \
+              conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }})
+
         else
           echo "Did not install project package"
         fi
