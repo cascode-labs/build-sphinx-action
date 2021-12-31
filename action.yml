@@ -103,7 +103,8 @@ runs:
           mkdir -p "${CHANNEL_PATH}"
           cp ${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*.bz2 ${CHANNEL_PATH}
           conda index "${CHANNEL_PATH}"
-          conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
+          conda update -c "${CHANNEL_PATH}" ${{ inputs.package_name }} || \
+            conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }}
         else
           echo "Did not install project package"
         fi
